@@ -21,7 +21,7 @@ Every name and student ID must appear in the D2 document and the D3 video. Witho
 | 3 | Catalogue maintenance | Haarisah | | |
 | 4 | Personal collections | Lee | | |
 | 5 | Reviews and ratings | Zeeshan | | |
-| 6 | Friends, following and activity | Husray | | |
+| 6 | Friends, following and activity | Hussain | 25184802 | |
 | 7 | Forums, user content and integration | Victor | | |
 
 All seven tasks are committed scope. Each one is a vertical slice: the owner designs and builds its tables, endpoints and Bruno tests. That lets every member state their contribution to the database, the web service and testing, which the D3 intro requires.
