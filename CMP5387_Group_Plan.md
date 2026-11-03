@@ -3,6 +3,7 @@
 **How to use this document**
 - Start with your own row in section 1 and your own task in section 6. Then read the shared rules (section 5) and the dates (sections 8 and 9).
 - Every technical term is explained in the glossary (section 18).
+- Your task's endpoint table shows which of your endpoints are Must, Should or Could (the priorities are explained in section 4).
 - Anything marked "proposed" needs the group's agreement at CP0 (Tue 3 Nov).
 
 **Dates and admin to confirm on Moodle**
@@ -28,7 +29,7 @@ Every name and student ID must appear in the D2 document and the D3 video. Witho
 | 6 | Friends, following and activity feed | Husray | | |
 | 7 | Forums and integration | Victor | | |
 
-Each task is a vertical slice: its owner designs and builds the slice's tables, endpoints and tests. This lets every member show their own contribution to the database, the web service and testing, which the D3 introduction requires. All seven tasks are committed scope.
+Each task is a vertical slice: its owner designs and builds the slice's tables, endpoints and tests. This lets every member show their own contribution to the database, the web service and testing, which the D3 introduction requires. All seven tasks are committed scope, and each contains Must work (section 4).
 
 ### Everyone's responsibilities at a glance
 
@@ -37,7 +38,7 @@ A D2 lead writes that part of the document and presents it at the meeting. A D3 
 | Name | D2 lead | D3 lead | Other responsibilities | Checkpoints they check |
 |---|---|---|---|---|
 | Ayaan | Title page; non-functional requirements; error contract | Introduction and slide template | Shared login and permission checks for every slice | None (foundation work) |
-| Lakhan | Problem summary; stakeholder table | Topic and requirements; video editing | OpenAPI docs (E2); runs the clean-machine test | CP5, CP6 |
+| Lakhan | Problem summary; stakeholder table; MoSCoW priorities | Topic and requirements; video editing | OpenAPI docs (E2); runs the clean-machine test | CP5, CP6 |
 | Haarisah | Database design and physical ERD | Design vs implementation | Design change log; notes the tutor's feedback at the D2 meeting | CP1 (database) |
 | Lee | Gantt chart; assembling the document; references; cover sheet; upload | Uploading the video link and zip | Collecting student IDs; checking the Moodle template | CP0, CP1 (document), CP2, CP6, CP7 |
 | Zeeshan | Endpoint inventory (compiling everyone's rows) | Demo script | Shared pytest setup (E1) | CP1 (inventory), CP3 |
@@ -62,7 +63,8 @@ A D2 lead writes that part of the document and presents it at the meeting. A D3 
 | Filter with no matches | 200 with an empty list, or an error | 200 with an empty list. An unknown id in the URL path is still 404. | |
 | Deleting games | CASCADE, RESTRICT or soft delete | Block deletion while players have data about the game (ON DELETE RESTRICT; the API returns 409). Maintainers correct entries with PATCH instead. | |
 | Visibility | Public, or friends only | Anyone can read collections, reviews and profiles; only the owner can change them. Record the privacy trade-off in D2. | |
-| Enhancements | See section 7 | E1 automated tests and E2 OpenAPI docs; E3 browser client only if time allows after CP4 | |
+| Priorities | MoSCoW (Must, Should, Could, Won't) | Agree the table in section 4. Priorities are set inside each slice, so every member keeps Must work. | |
+| Enhancements | See section 7 | E1 automated tests (Should) and E2 OpenAPI docs (Could); E3 browser client (Could) only if time allows after CP4 | |
 | Workload (proposed) | Keep, or rebalance | Guides and media links move from Victor to Lakhan, to even out the slices | |
 
 ### Assumptions (state and justify these in the D2 problem summary)
@@ -129,7 +131,7 @@ A D2 lead writes that part of the document and presents it at the meeting. A D3 
 | FR10 | Send and accept friend requests, follow players, and see a feed of their recent activity | 6 |
 | FR11 | Discuss games in forum threads and posts | 7 |
 | FR12 | Share guides, screenshot links and video links for games | 2 |
-| Out of scope | Hosting or running games; uploading files; achievements | n/a |
+| Out of scope | See the Won't list under Priorities below | n/a |
 
 ### Data the system must store
 - Users, their role (player or maintainer), profile and favourite games
@@ -151,6 +153,62 @@ A D2 lead writes that part of the document and presents it at the meeting. A D3 
 | NFR6 | Reproducibility: the system runs from the zip on a clean machine | The CP5 clean-machine test |
 | NFR7 | Maintainability: one module per slice, commented code, reviewed changes | Repo structure and pull request history |
 | NFR8 | Documentation: README, OpenAPI docs and an organised Bruno collection | Markers can run every request using the README alone |
+
+### Priorities (MoSCoW)
+
+MoSCoW comes from the DSDM Agile Project Framework (Agile Business Consortium, n.d.). It sorts every requirement into one of four groups:
+- **Must:** the minimum usable subset. Without it, the system doesn't meet the problem statement or the brief. Never dropped.
+- **Should:** important but not vital. The system still works without it.
+- **Could:** wanted but less important. The first thing dropped if a deadline is at risk.
+- **Won't (this time):** agreed not to be delivered in this project, with a reason.
+
+Priorities are set inside each slice, not between slices, so every member has Must work and keeps their database, web service and testing evidence. Anyone who falls behind drops their own Could items first, then their Should items; a Must at risk gets help from the rest of the group. DSDM recommends keeping Musts to no more than about 60% of the effort, with about 20% in Coulds, so that dropping Coulds absorbs problems. Check this when agreeing the table at CP0.
+
+| Priority | Requirement or feature | Covers | Owner | Why this priority |
+|---|---|---|---|---|
+| Must | Register and log in, with player and maintainer roles | FR9 | Ayaan | Players can only change their own records if the system knows who they are, and maintainers need a role |
+| Must | Shared login and permission checks, and the shared error format | FR8, NFR1, NFR4 | Ayaan | Every "reject the request" story depends on them |
+| Must | Browse and search games by title, genre and platform, in pages, with the genre and platform lists | FR1 | Lakhan (platform list: Haarisah) | Explicit in the problem statement and the Player story |
+| Must | Game details: genres, platforms with release dates, average rating | FR2 | Lakhan | The problem statement lists title, genre, release information and platform availability |
+| Must | Add games; correct details and genres; link and unlink platforms with release dates | FR7 | Haarisah | The Catalogue Maintainer story |
+| Must | Block deleting a game that players have data about (409) | FR7, FR8 | Haarisah | The problem statement's "changes that would otherwise leave the system in an inconsistent state" |
+| Must | Personal collections: add, change status, remove, list by status, one record per game | FR3, FR4 | Lee | The Collector story |
+| Must | Write, revise and list reviews; ratings 1 to 10; one per player per game; average rating | FR5, FR6 | Zeeshan | The Reviewer and Player stories |
+| Must | Friend requests: send, accept, decline; list friends | FR10 | Husray | The project is defined by user-based social features, and this is the core of the friend system |
+| Must | Forum threads and posts: create and read | FR11 | Victor | The topic's core social interaction feature |
+| Must | Invalid ratings, unknown games and changes to other players' data rejected, with data left unchanged | FR8 | Everyone | Explicit in the problem statement |
+| Must | Hashed passwords, database constraints, transactions and consistent errors | NFR1 to NFR4 | Everyone | Without them, the "reject and leave unchanged" story isn't actually true |
+| Must | Setup script, seed data, requirements.txt, README, Bruno collection and zip that work on a clean machine | NFR6, NFR8 | Victor | Required by the brief; a submission that won't run can't be marked |
+| Must | Bruno happy-path and sad-path tests for every Must endpoint | All FRs | Everyone | The D3 demo and evaluation are judged on this evidence |
+| Should | Profile with a bio, viewable by anyone and editable by its owner | FR9 | Ayaan | Part of the topic's customisable profiles; no problem statement story depends on it |
+| Should | Change history of catalogue corrections | FR7 | Haarisah | Proves that corrections kept player data, but corrections work without it |
+| Should | Deleting your own review | FR5 | Zeeshan | Revising a review already lets players change their opinion |
+| Should | Removing a friend; following and unfollowing players | FR10 | Husray | Completes the friend system; requests alone already make it social |
+| Should | Activity feed of friends' and followed players' collections and reviews | FR10 | Husray | The topic's "see their gaming activities"; the hardest query, so it carries the most risk |
+| Should | Editing and deleting posts (authors edit; authors or maintainers delete) | FR11 | Victor | Forums work without editing; moderation matters but comes second |
+| Should | Guides, screenshot links and video links | FR12 | Lakhan | The topic's user-generated content; not in the problem statement |
+| Should | Indexes on filtered columns | NFR5 | Lakhan and Haarisah | The seed data is small enough without them, but they show database understanding |
+| Should | One module per slice, commented code, reviewed pull requests | NFR7 | Everyone | Keeps the code explainable and contributions visible; the system runs without it |
+| Should | Automated pytest tests (E1) | NFR3, NFR7 | Everyone (setup: Zeeshan) | Stronger, repeatable evidence; Bruno already covers the Must tests |
+| Could | Favourite games on profiles | FR9 | Ayaan | Nice for profiles; no story depends on it |
+| Could | OpenAPI (Swagger) documentation (E2) | NFR8 | Lakhan | An enhancement; the README and Bruno collection already document the API |
+| Could | Browser client in JavaScript (E3), only after CP4 | None | Unassigned | An extension task in the D3 checklist; Bruno is enough as the client |
+
+**Won't (this time)**
+
+| Feature | Why not |
+|---|---|
+| Hosting or running games | Explicitly excluded by the problem statement |
+| Uploading image or video files | File storage, size limits and security add risk; https links meet the need |
+| Achievements | Would need data from the game platforms themselves |
+| Notifications (e.g. "your request was accepted") | Needs its own table and delivery method; the friends list and feed show the same information |
+| Privacy settings for collections and the feed | Listed as a future improvement (see the competing needs in section 3) |
+| Custom lists beyond owned, played and wanted | The problem statement defines these three statuses |
+| Review history and "helpful" votes on reviews | Not asked for; revising a review replaces it |
+| Adding genres or platforms through the API | Fixed lists in the seed data keep the catalogue consistent |
+| Password reset and email verification | Would need an email service |
+
+Reference for D2: Agile Business Consortium (n.d.) *MoSCoW prioritisation*. Available at: https://www.agilebusiness.org/?p=1907 (Accessed: 3 November 2026).
 
 ---
 
@@ -211,10 +269,10 @@ Only then is the change written.
 - **Notation in the table specs:** PK = primary key; FK = foreign key; RESTRICT, CASCADE and SET NULL = what happens when the referenced row is deleted; CHECK, UNIQUE and NOT NULL = constraints.
 
 ### D2 row formats
-Endpoint inventory (one row per endpoint; the FR column links it to a requirement):
+Endpoint inventory (one row per endpoint; the FR and Priority columns link it to the requirements and the MoSCoW table):
 
-| FR | Route | Method | Description | Users | Happy input | Happy output (status and body) | Sad inputs | Sad outputs (status and body) |
-|---|---|---|---|---|---|---|---|---|
+| FR | Priority | Route | Method | Description | Users | Happy input | Happy output (status and body) | Sad inputs | Sad outputs (status and body) |
+|---|---|---|---|---|---|---|---|---|---|
 
 Database design (one row per table):
 
@@ -263,6 +321,8 @@ Each task starts with a plain-English brief: the problem your slice solves, what
 
 Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds Bruno requests and pytest tests as they build, and explains their own code in the video.
 
+In each brief, items marked (Should) or (Could) are lower priority; everything else is a Must. Build your Musts first.
+
 ### Task 1: Users, auth and profiles
 **Owner:** Ayaan Ahmed
 
@@ -271,7 +331,7 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 > **What you build:**
 > - Registration and login. Login returns a token, which Bruno sends with every later request.
 > - Two kinds of user: player and maintainer.
-> - A profile with a bio and favourite games.
+> - A profile with a bio (Should) and favourite games (Could).
 > - Two shared checks that every other slice uses: "is this person logged in?" and "is this their record, or are they a maintainer?"
 > - The shared error helper, so every slice fails in the same way.
 >
@@ -286,14 +346,15 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 - `favourite_games`: user_id FK, game_id FK RESTRICT, PK (user_id, game_id)
 
 **Endpoints**
-| Method | Route | Users | Notes |
-|---|---|---|---|
-| POST | /auth/register | Anyone | 201 |
-| POST | /auth/login | Anyone | 200 with a token |
-| GET | /users/{id} | Anyone | Profile and favourites; never returns the email or password hash |
-| PATCH | /users/{id} | Owner only | Bio and username only; the role can't be changed |
-| PUT | /users/{id}/favourites/{game_id} | Owner only | 201 when added, 200 if already a favourite |
-| DELETE | /users/{id}/favourites/{game_id} | Owner only | 204 |
+
+| Method | Route | Users | Priority | Notes |
+|---|---|---|---|---|
+| POST | /auth/register | Anyone | Must | 201 |
+| POST | /auth/login | Anyone | Must | 200 with a token |
+| GET | /users/{id} | Anyone | Should | Profile and favourites; never returns the email or password hash |
+| PATCH | /users/{id} | Owner only | Should | Bio and username only; the role can't be changed |
+| PUT | /users/{id}/favourites/{game_id} | Owner only | Could | 201 when added, 200 if already a favourite |
+| DELETE | /users/{id}/favourites/{game_id} | Owner only | Could | 204 |
 
 **Required sad paths and edge cases:** registration with no password (400); a password shorter than 8 characters (422); a duplicate email or username (409); a wrong password (401); editing another player's profile (403); trying to change your own role (403); favouriting an unknown game (404).
 
@@ -314,8 +375,8 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 > - The games and genres tables.
 > - A list of games that can be filtered and comes back in pages.
 > - A single game's details: description, genres, platforms with release dates, and average rating.
-> - Guides, screenshot links and video links attached to games (proposed: moved from Victor).
-> - The OpenAPI documentation (E2).
+> - Guides, screenshot links and video links attached to games (Should; proposed: moved from Victor).
+> - The OpenAPI documentation (E2, Could).
 >
 > **Rules your slice enforces:** anyone can read the catalogue, but nobody changes it through your endpoints (that's Haarisah's slice); an unknown game gives 404; lists come in pages; links must be https; only the author or a maintainer can delete content.
 >
@@ -330,14 +391,15 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 - `user_content` (proposed): id PK, user_id FK, game_id FK RESTRICT, type CHECK IN ('guide','screenshot','video'), title NOT NULL, body, url CHECK (url LIKE 'https://%'), created_at. A CHECK also makes sure a guide has a body and a screenshot or video has a url.
 
 **Endpoints**
-| Method | Route | Users | Notes |
-|---|---|---|---|
-| GET | /games?title=&genre=&platform=&page=&size= | Anyone | Title matches part of the title, ignoring case; genre and platform take ids; filters combine |
-| GET | /games/{id} | Anyone | Genres, platforms with release dates, average rating |
-| GET | /genres | Anyone | |
-| GET | /games/{id}/content | Anyone | |
-| POST | /games/{id}/content | Logged-in player | 201 |
-| DELETE | /content/{id} | Author or maintainer | 204 |
+
+| Method | Route | Users | Priority | Notes |
+|---|---|---|---|---|
+| GET | /games?title=&genre=&platform=&page=&size= | Anyone | Must | Title matches part of the title, ignoring case; genre and platform take ids; filters combine |
+| GET | /games/{id} | Anyone | Must | Genres, platforms with release dates, average rating |
+| GET | /genres | Anyone | Must | |
+| GET | /games/{id}/content | Anyone | Should | |
+| POST | /games/{id}/content | Logged-in player | Should | 201 |
+| DELETE | /content/{id} | Author or maintainer | Should | 204 |
 
 **Required sad paths and edge cases:** an unknown game (404); `page=abc` (400); page 0 or size 500 (422); a filter with no matches (200 with an empty list); a link that isn't https (422); a content type of `meme` (422); deleting someone else's content (403).
 
@@ -359,9 +421,9 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 > **What you build:**
 > - Platforms, and the link between a game and a platform, with a release date for each platform.
 > - Maintainer-only endpoints to add a game, correct a game (including its genres), link or unlink platforms, and delete a game nobody has used.
-> - A change history recording who changed what, and when.
+> - A change history recording who changed what, and when (Should).
 >
-> **Rules your slice enforces:** only maintainers can change the catalogue; a game that players have collected, reviewed, favourited or discussed can't be deleted (409); every change is written to the history in the same transaction.
+> **Rules your slice enforces:** only maintainers can change the catalogue; a game that players have collected, reviewed, favourited or discussed can't be deleted (409); every change is written to the history in the same transaction (Should).
 >
 > **What you show in the demo:** correcting a description and a release date, then showing that the game's reviews and collections are untouched and the change is in the history; a player refused when trying to edit (403).
 >
@@ -373,15 +435,16 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 - `catalogue_changes`: id PK, game_id FK SET NULL, maintainer_id FK, field, old_value, new_value, changed_at
 
 **Endpoints**
-| Method | Route | Users | Notes |
-|---|---|---|---|
-| POST | /games | Maintainer | 201; the body includes `genre_ids` |
-| PATCH | /games/{id} | Maintainer | Any of title, description, developer, publisher, genre_ids |
-| PUT | /games/{id}/platforms/{platform_id} | Maintainer | Body: release_date. 201 when the link is new, 200 when it is updated |
-| DELETE | /games/{id}/platforms/{platform_id} | Maintainer | 204 |
-| DELETE | /games/{id} | Maintainer | 204, or 409 if players have data about the game |
-| GET | /games/{id}/history | Anyone | |
-| GET | /platforms | Anyone | |
+
+| Method | Route | Users | Priority | Notes |
+|---|---|---|---|---|
+| POST | /games | Maintainer | Must | 201; the body includes `genre_ids` |
+| PATCH | /games/{id} | Maintainer | Must | Any of title, description, developer, publisher, genre_ids |
+| PUT | /games/{id}/platforms/{platform_id} | Maintainer | Must | Body: release_date. 201 when the link is new, 200 when it is updated |
+| DELETE | /games/{id}/platforms/{platform_id} | Maintainer | Must | 204 |
+| DELETE | /games/{id} | Maintainer | Must | 204, or 409 if players have data about the game |
+| GET | /games/{id}/history | Anyone | Should | |
+| GET | /platforms | Anyone | Must | |
 
 **Required sad paths and edge cases:** a player attempting a PATCH (403); deleting a game that has reviews (409, with a GET of the reviews before and after); linking an unknown platform (404); a release date that isn't a real date (422); PATCHing an unknown game (404).
 
@@ -419,11 +482,12 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 - `collection_entries`: id PK, user_id FK, game_id FK RESTRICT, status NOT NULL CHECK IN ('owned','played','wanted'), added_at, updated_at, UNIQUE (user_id, game_id)
 
 **Endpoints**
-| Method | Route | Users | Notes |
-|---|---|---|---|
-| PUT | /users/{id}/collection/{game_id} | Owner only | Body: status. 201 when created, 200 when changed |
-| GET | /users/{id}/collection?status=&page= | Anyone | |
-| DELETE | /users/{id}/collection/{game_id} | Owner only | 204 |
+
+| Method | Route | Users | Priority | Notes |
+|---|---|---|---|---|
+| PUT | /users/{id}/collection/{game_id} | Owner only | Must | Body: status. 201 when created, 200 when changed |
+| GET | /users/{id}/collection?status=&page= | Anyone | Must | |
+| DELETE | /users/{id}/collection/{game_id} | Owner only | Must | 204 |
 
 **Required sad paths and edge cases:** a PUT on another player's collection (403, their list unchanged); an unknown game (404); status `borrowed` (422); filtering by `?status=borrowed` (422); repeating the same PUT (200, still one record).
 
@@ -440,7 +504,7 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 >
 > **What you build:**
 > - The reviews table.
-> - Endpoints to write, edit and delete your own review.
+> - Endpoints to write and edit your own review, and to delete it (Should).
 > - A list of all reviews for a game.
 > - The game's average rating and number of reviews.
 >
@@ -454,13 +518,14 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 - `reviews`: id PK, user_id FK, game_id FK RESTRICT, rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 10), body VARCHAR(2000), created_at, updated_at, UNIQUE (user_id, game_id)
 
 **Endpoints**
-| Method | Route | Users | Notes |
-|---|---|---|---|
-| POST | /games/{id}/reviews | Logged-in player | 201 |
-| GET | /games/{id}/reviews?page= | Anyone | |
-| GET | /games/{id}/rating | Anyone | Average and count |
-| PUT | /reviews/{id} | Author only | Replaces the rating and text |
-| DELETE | /reviews/{id} | Author only | 204 |
+
+| Method | Route | Users | Priority | Notes |
+|---|---|---|---|---|
+| POST | /games/{id}/reviews | Logged-in player | Must | 201 |
+| GET | /games/{id}/reviews?page= | Anyone | Must | |
+| GET | /games/{id}/rating | Anyone | Must | Average and count |
+| PUT | /reviews/{id} | Author only | Must | Replaces the rating and text |
+| DELETE | /reviews/{id} | Author only | Should | 204 |
 
 **Required sad paths and edge cases:** no rating field (400); a rating of 11 or 0 (422); a second review of the same game (409); editing someone else's review (403, with a GET before and after); reviewing an unknown game (404).
 
@@ -478,9 +543,10 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 > **The problem:** the topic is a social platform: players want to connect with each other and see what their friends are playing and reviewing.
 >
 > **What you build:**
-> - Friend requests (send, accept, decline) and removing a friend.
-> - Following, which is one-way and needs no acceptance.
-> - A feed of recent collection changes and reviews from your friends and the people you follow.
+> - Friend requests: send, accept, decline, and list your friends.
+> - Removing a friend (Should).
+> - Following, which is one-way and needs no acceptance (Should).
+> - A feed of recent collection changes and reviews from your friends and the people you follow (Should).
 >
 > **Rules your slice enforces:** you can't friend or follow yourself; two players can only have one friendship or request between them; only the person who received a request can accept or decline it.
 >
@@ -495,15 +561,16 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 - `follows`: follower_id FK, followee_id FK, created_at, CHECK (follower_id <> followee_id), PK (follower_id, followee_id)
 
 **Endpoints**
-| Method | Route | Users | Notes |
-|---|---|---|---|
-| POST | /friends/requests | Logged-in player | Body: user_id. 201 |
-| PATCH | /friends/requests/{id} | The player who received it | Body: accept or decline. Accept gives 200; decline deletes the request (204) |
-| GET | /users/{id}/friends | Anyone | Accepted friends only |
-| DELETE | /friends/{user_id} | Either friend | 204 |
-| POST | /users/{id}/follow | Logged-in player | 201 |
-| DELETE | /users/{id}/follow | Logged-in player | 204 |
-| GET | /feed?page= | Logged-in player | Newest first |
+
+| Method | Route | Users | Priority | Notes |
+|---|---|---|---|---|
+| POST | /friends/requests | Logged-in player | Must | Body: user_id. 201 |
+| PATCH | /friends/requests/{id} | The player who received it | Must | Body: accept or decline. Accept gives 200; decline deletes the request (204) |
+| GET | /users/{id}/friends | Anyone | Must | Accepted friends only |
+| DELETE | /friends/{user_id} | Either friend | Should | 204 |
+| POST | /users/{id}/follow | Logged-in player | Should | 201 |
+| DELETE | /users/{id}/follow | Logged-in player | Should | 204 |
+| GET | /feed?page= | Logged-in player | Should | Newest first |
 
 **Required sad paths and edge cases:** friending or following yourself (422); a second request between the same two players (409); accepting a request sent to someone else (403); a request to an unknown user (404); following someone twice (409).
 
@@ -521,7 +588,7 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 > **The problem:** players want to discuss games with each other. The group also needs one person who makes the whole system fit together and run on any machine.
 >
 > **What you build:**
-> - Discussion threads for each game, and posts in them.
+> - Discussion threads for each game, and posts in them; editing and deleting posts (Should).
 > - The shared project setup: repo, app structure, database setup, seed data, requirements.txt, README, Bruno collection and final zip.
 >
 > **Rules your slice enforces:** only the author can edit a post; the author or a maintainer can delete it; empty posts are rejected.
@@ -535,14 +602,15 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 - `posts`: id PK, thread_id FK, user_id FK, body NOT NULL, created_at, updated_at
 
 **Endpoints**
-| Method | Route | Users | Notes |
-|---|---|---|---|
-| GET | /games/{id}/threads | Anyone | |
-| POST | /games/{id}/threads | Logged-in player | 201 |
-| GET | /threads/{id}/posts | Anyone | |
-| POST | /threads/{id}/posts | Logged-in player | 201 |
-| PATCH | /posts/{id} | Author only | |
-| DELETE | /posts/{id} | Author or maintainer | 204 |
+
+| Method | Route | Users | Priority | Notes |
+|---|---|---|---|---|
+| GET | /games/{id}/threads | Anyone | Must | |
+| POST | /games/{id}/threads | Logged-in player | Must | 201 |
+| GET | /threads/{id}/posts | Anyone | Must | |
+| POST | /threads/{id}/posts | Logged-in player | Must | 201 |
+| PATCH | /posts/{id} | Author only | Should | |
+| DELETE | /posts/{id} | Author or maintainer | Should | 204 |
 
 **Required sad paths and edge cases:** posting to an unknown thread (404); a post with no body field (400); an empty post (422); editing someone else's post (403).
 
@@ -568,11 +636,11 @@ Everyone also writes their own D2 inventory and table rows (by Mon 9 Nov), adds 
 
 The D3 bands above 65% need "meaningful enhancements" beyond the taught examples. The D3 checklist is just as clear that a modest system that is coherent, robust, well tested and well defended beats a bigger one. So these enhancements improve quality rather than adding features.
 
-| ID | Enhancement | Owner | Why it adds marks |
-|---|---|---|---|
-| E1 | Automated pytest tests for each slice's key happy and sad paths, run against a fresh test database | Each owner for their slice; Zeeshan sets up the shared fixtures | Repeatable test evidence for the evaluation, including things Bruno can't test, such as a failure halfway through a transaction |
-| E2 | OpenAPI (Swagger) documentation for the whole API, written from the endpoint inventory | Lakhan | A browsable service contract; comparing it with the final code feeds the design vs implementation reflection |
-| E3 (stretch, only after CP4) | A small browser client in JavaScript for browsing, collections and reviews | Unassigned | The checklist treats a custom client as an extension task. It needs CORS switching on in the API. |
+| ID | Enhancement | Priority | Owner | Why it adds marks |
+|---|---|---|---|---|
+| E1 | Automated pytest tests for each slice's key happy and sad paths, run against a fresh test database | Should | Each owner for their slice; Zeeshan sets up the shared fixtures | Repeatable test evidence for the evaluation, including things Bruno can't test, such as a failure halfway through a transaction |
+| E2 | OpenAPI (Swagger) documentation for the whole API, written from the endpoint inventory | Could | Lakhan | A browsable service contract; comparing it with the final code feeds the design vs implementation reflection |
+| E3 (only after CP4) | A small browser client in JavaScript for browsing, collections and reviews | Could (lowest) | Unassigned | The checklist treats a custom client as an extension task. It needs CORS switching on in the API. |
 
 In the video, explain why each enhancement was chosen and what it costs. An enhancement nobody can defend adds nothing.
 
@@ -626,7 +694,8 @@ Bruno requests and pytest tests are written in the same week as the endpoint the
 - Anything more than a week behind its checkpoint is raised at the stand-up, and the owner pairs with one helper until it catches up.
 - If the shared checks are late, other slices use a fixed test user and keep building.
 - If the feed is late, ship friends and follows, show the feed with seed data, and record the gap in the evaluation.
-- Cut work in this order: E3 first, then E2. Sad-path tests are never cut.
+- Follow the priorities in section 4: drop Could items first (E3, then E2, then favourites), then the late slice's own Should items. Must items and Bruno sad-path tests are never dropped; if a Must is at risk, someone with spare time helps.
+- Record anything dropped in the change log (section 11), because the D3 reflection has to acknowledge missing functionality.
 - The CP4 feature freeze is fixed: after it, only bug fixes.
 
 **Weekly stand-up:** 15 minutes after each Tuesday 5387 lab, covering what's done, what's next and what's blocked.
@@ -637,11 +706,11 @@ Bruno requests and pytest tests are written in the same week as the endpoint the
 
 | CP | Date | Pass criteria | Checked by |
 |---|---|---|---|
-| CP0 | Tue 3 Nov | Section 2 decisions agreed; all student IDs collected; workload and enhancements confirmed; empty repo created with everyone added; Moodle D2 template checked | Lee |
+| CP0 | Tue 3 Nov | Section 2 decisions agreed, including the priorities in section 4; all student IDs collected; workload and enhancements confirmed; empty repo created with everyone added; Moodle D2 template checked | Lee |
 | CP1 | Fri 13 Nov | D2 document follows the template; every endpoint row has happy and sad paths; every table has keys and constraints; physical ERD done; references compiled; under 4000 words; consistency check done (section 12); mock meeting held; all 7 signed off | Zeeshan (inventory), Haarisah (database), Lee (document) |
 | CP2 | Tue 17 Nov | All 7 attend; each person explains their own slice; tutor feedback noted in the change log; document uploaded before 15:00 | Lee |
 | CP3 | Fri 27 Nov | On a fresh clone: create and seed the database, start the server, and pass the Bruno register, login and browse requests | Zeeshan |
-| CP4 | Fri 11 Dec | Feature freeze: every inventory endpoint built; the full Bruno collection and pytest suite pass; every sad path leaves data unchanged | Husray |
+| CP4 | Fri 11 Dec | Feature freeze: every Must built; every Should built or dropped and recorded in the change log; the full Bruno collection and pytest suite pass; every sad path leaves data unchanged | Husray |
 | CP5 | Fri 18 Dec | Clean-machine test using only the README, on a lab PC or another computer that has never run the project; every member's code segment recorded | Lakhan runs it; Victor fixes problems |
 | CP6 | Thu 31 Dec | Video 20 minutes or less; all names and IDs on one slide; every member states their DB, web service and testing contribution; the link opens and downloads from a non-team account | Lakhan and Lee |
 | CP7 | January, by 15:00 | Video link and zip submitted, ideally 1 to 2 days early; the video file isn't edited after submission | Lee |
@@ -658,7 +727,7 @@ Bruno requests and pytest tests are written in the same week as the endpoint the
 
 ## 10. Evaluation plan (D2 evaluation ideas, completed in D3)
 
-The chain is: requirement → test → expected result → evidence. In D3, add **Actual result** and **Verdict** (met, partly met, not met) columns, and discuss failed tests and limitations honestly. "The program runs" is not evidence that a requirement is met.
+The chain is: requirement → test → expected result → evidence. In D3, add **Actual result** and **Verdict** (met, partly met, not met) columns, and discuss failed tests and limitations honestly. "The program runs" is not evidence that a requirement is met. Report the verdicts by priority: every Must should be met, and any Should or Could that was dropped or only partly met is discussed as a limitation.
 
 | ID | Requirement | Test | Expected result | Evidence |
 |---|---|---|---|---|
@@ -686,7 +755,7 @@ The chain is: requirement → test → expected result → evidence. In D3, add 
 
 ## 11. Design change log (feeds the D3 design vs implementation section)
 
-Haarisah owns this log. Everyone adds a row whenever their implementation differs from the D2 design. The first rows are the tutor's feedback from the D2 meeting. In week 12, Haarisah compares the final models with the D2 ERD and Zeeshan compares the final routes with the D2 inventory; every difference goes in the log.
+Haarisah owns this log. Everyone adds a row whenever their implementation differs from the D2 design, including any Should or Could item that was dropped. The first rows are the tutor's feedback from the D2 meeting. In week 12, Haarisah compares the final models with the D2 ERD and Zeeshan compares the final routes with the D2 inventory; every difference goes in the log.
 
 | Date | Requirement | D2 design | Final implementation | Reason and evidence | Consequence and lesson | Logged by |
 |---|---|---|---|---|---|---|
@@ -705,6 +774,7 @@ Haarisah owns this log. Everyone adds a row whenever their implementation differ
 - [ ] Endpoint inventory: route, description, method, happy and sad inputs and outputs, users involved (5%)
 - [ ] Database design: table summary and physical ERD (5%)
 - [ ] Evaluation ideas (2%)
+- [ ] MoSCoW priority table (requested by our tutor), with a reason for each priority and a Won't list
 - [ ] AI usage section
 - [ ] Each member's contribution is clear (reuse the responsibilities table in section 1), and all 7 have signed off
 - [ ] Under 4000 words of body text (+10% tolerance, beyond which nothing is marked; tables, ERD, Gantt and code don't count); font size 11; 1.5 line spacing; cover sheet; BCU Harvard references
@@ -712,7 +782,7 @@ Haarisah owns this log. Everyone adds a row whenever their implementation differ
 **What lifts each section to 4 or 5 stars (from the D2 checklist)**
 - [ ] Assumptions stated and justified; the data to be stored identified
 - [ ] Competing stakeholder needs discussed and linked to endpoints and tables
-- [ ] The Gantt shows client (Bruno) work, testing, submission preparation, parallel work and the "if something runs late" plan
+- [ ] The Gantt shows client (Bruno) work, testing, submission preparation, parallel work and the "if something runs late" plan, which follows the MoSCoW priorities
 - [ ] The inventory shows success codes as well as errors, and the API design rationale explains the choices
 - [ ] The database design shows keys, data types, cardinality and the alternatives considered
 - [ ] The evaluation plan follows requirement → test → expected result → evidence
@@ -733,7 +803,7 @@ Haarisah owns this log. Everyone adds a row whenever their implementation differ
 | Live demo (section 14) | 30% | 6:30 | Zeeshan; each owner narrates their own step |
 | Code explanation: each person traces one request through their slice (client → route → validation → database → response), ideally the same request they showed in the demo, using terms such as ORM, idempotent and foreign key; plus how the Bruno collection is organised | 10% | 4:30 | Everyone |
 | Design vs implementation, from the change log: what changed, why, the consequence and the lesson | 10% | 2:00 | Haarisah |
-| Evaluation: how we tested, the results table against the FRs and NFRs, failed tests, limitations and improvements | 10% | 2:00 | Husray |
+| Evaluation: how we tested, the results table against the FRs and NFRs (by priority), failed tests, dropped items, limitations and improvements | 10% | 2:00 | Husray |
 | Resources and AI reflection | Required content | 0:30 | Victor |
 
 Total: 18:15, which leaves a margin under the 20-minute limit.
@@ -742,7 +812,7 @@ Total: 18:15, which leaves a margin under the 20-minute limit.
 
 ## 14. Demo script
 
-Before starting, open the database in DB Browser for SQLite next to Bruno, so every change can be shown landing in the database. Say which requirement each step proves.
+Before starting, open the database in DB Browser for SQLite next to Bruno, so every change can be shown landing in the database. Say which requirement each step proves. If a Should or Could item was dropped, skip that part of the step and cover it in the evaluation instead.
 
 1. Register and log in; edit your profile and add a favourite game (FR9). Show a 401 with no token, and a 403 when editing someone else's profile.
 2. Browse games by title, genre and platform, then open one game's details (FR1, FR2). Show in the database that its genres and platforms come from the link tables.
@@ -820,7 +890,7 @@ Log every use as it happens, including help with planning. Rebuilding this log f
 | Clean-machine setup fails | Reproducibility marks lost | CP3 and CP5 run by Zeeshan and Lakhan, not Victor, who wrote the setup |
 | A member contributes little | Individual mark adjusted | Vertical slices, a visible pull request history, and each person's own segment in the meeting and video |
 | Video link not accessible to staff | The whole group fails | Test the link from a non-team account; never edit the file after submitting |
-| Scope too large to defend | Lower marks despite more code | The checklists reward coherent, tested, well-defended systems; cut E3 and polish before adding anything |
+| Scope too large to defend | Lower marks despite more code | The checklists reward coherent, tested, well-defended systems; drop Coulds first (section 4) and polish the Musts before adding anything |
 
 ---
 
@@ -829,6 +899,7 @@ Log every use as it happens, including help with planning. Rebuilding this log f
 | Term | Meaning |
 |---|---|
 | Slice | One person's feature from top to bottom: its tables, endpoints and tests |
+| MoSCoW | A way of prioritising requirements: Must have, Should have, Could have, Won't have this time (section 4) |
 | FR, NFR | Functional requirement (what the system does); non-functional requirement (how well it does it: security, speed, reliability) |
 | CP | Checkpoint: a date when the group checks something is genuinely done (section 9) |
 | D2 lead, D3 lead | The person who writes that part of the D2 document, or scripts that part of the video |
