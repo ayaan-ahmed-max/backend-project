@@ -16,7 +16,7 @@ Every name and student ID must appear in the D2 document and the D3 video. Witho
 
 | # | Task | Name | Student ID | D2 signed off |
 |---|---|---|---|---|
-| 1 | Users, auth and profiles | Ayaan Ahmed | | |
+| 1 | Users, auth and profiles | Ayaan Ahmed | 25178079 | |
 | 2 | Catalogue browse | Lakhan | | |
 | 3 | Catalogue maintenance | Haarisah | | |
 | 4 | Personal collections | Lee | | |
