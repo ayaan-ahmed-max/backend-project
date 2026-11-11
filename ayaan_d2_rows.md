@@ -34,7 +34,18 @@ Note on the users table: SQLite treats VARCHAR(n) as a label only and does not e
 
 ---
 
-## 3. Assumptions
+## 3. Design decisions
+
+| Decision | Alternative rejected | Reason | Trade-off |
+|---|---|---|---|
+| Login uses a token (JWT) that the client sends with every request | Server-side sessions, where the server keeps a record of who is logged in | Bruno, our client, can attach the token to every request, so testing is simple, and the server stores nothing about logins | A token can't be cancelled before it expires, so tokens expire after 1 hour |
+| The ownership check is a function called inside each route | A decorator that runs before the route | The owner of a review or post is only known once the record has been found, and the agreed order of checks puts 404 (not found) before 403 (not yours). A decorator would run too early and break that order | Each route must remember to call the check; a missing call would be caught by the 403 Bruno tests |
+| An unknown email at login gives 401 with the same message as a wrong password | 404 "user not found" | A different response would reveal which emails are registered, which helps an attacker | A user who mistypes their email gets a less specific message |
+| Any field an endpoint doesn't accept gives 400, but a role field on PATCH /users/{id} gives 403 | Silently ignoring unknown fields, or 422 for all of them | Ignoring fields hides client bugs. An unexpected field is a badly formed request (400), while a logged-in user trying to change their own role is a permission problem (403). One rule for every slice means the same mistake gets the same answer everywhere | Clients must send only the fields each endpoint accepts |
+
+---
+
+## 4. Assumptions
 
 1. **Tokens expire after 1 hour.** A request with an expired token gets 401 and the user logs in again. A short lifetime limits the damage if a token is stolen.
 2. **Logout happens on the client, with no logout endpoint.** The client discards the token. A JWT is not stored on the server, so there is nothing for a logout endpoint to delete.
