@@ -483,11 +483,11 @@ In each brief, items marked (Should) or (Could) are lower priority; everything e
 
 **Endpoints**
 
-| Method | Route | Users | Priority | Notes |
-|---|---|---|---|---|
-| PUT | /users/{id}/collection/{game_id} | Owner only | Must | Body: status. 201 when created, 200 when changed |
-| GET | /users/{id}/collection?status=&page= | Anyone | Must | |
-| DELETE | /users/{id}/collection/{game_id} | Owner only | Must | 204 |
+| FR | Priority | Route | Method | Description | Users | Happy input | Happy output (status and body) | Sad inputs | Sad outputs (status and body) |
+|---|---|---|---|---|---|---|---|---|---|
+| FR3, FR4, FR8 | Must | `/users/{id}/collection/{game_id}` | PUT | Adds a game to the player's collection or updates its status. Repeating the request keeps one entry. | Owner only | Signed in as player 7.<br>1. `PUT /users/7/collection/3` with `{"status":"wanted"}`<br>2. `PUT /users/7/collection/3` with `{"status":"played"}`<br>3. Repeat request 2 exactly. | 1. **201** `{"user_id":7,"game_id":3,"status":"wanted"}`<br>2. **200** `{"user_id":7,"game_id":3,"status":"played"}`<br>3. **200** `{"user_id":7,"game_id":3,"status":"played"}` (still one entry) | Signed in as player 7.<br>1. `PUT /users/7/collection/3` with `{"status":"borrowed"}`<br>2. `PUT /users/7/collection/99999` with `{"status":"wanted"}`<br>3. `PUT /users/2/collection/3` with `{"status":"wanted"}` | 1. **422** `{"error":{"code":422,"message":"status must be owned, played or wanted","field":"status"}}`<br>2. **404** `{"error":{"code":404,"message":"Game not found","field":"game_id"}}`<br>3. **403** `{"error":{"code":403,"message":"You can only change your own collection","field":null}}` (the collection is unchanged) |
+| FR3 | Must | `/users/{id}/collection` | GET | Lists a player's collection, with an optional status filter and pagination. | Anyone | `GET /users/7/collection?status=wanted&page=1` (no token or request body) | **200** `{"items":[{"user_id":7,"game_id":3,"status":"wanted"}],"page":1,"size":20,"total":1}` | 1. `GET /users/7/collection?status=borrowed`<br>2. `GET /users/99999/collection` | 1. **422** `{"error":{"code":422,"message":"status must be owned, played or wanted","field":"status"}}`<br>2. **404** `{"error":{"code":404,"message":"User not found","field":"id"}}` |
+| FR3, FR8 | Must | `/users/{id}/collection/{game_id}` | DELETE | Removes a game from the player's collection. | Owner only | `DELETE /users/7/collection/3` (signed in as player 7, no request body) | **204** (no response body) | 1. `DELETE /users/7/collection/3` while signed out<br>2. `DELETE /users/2/collection/3` while signed in as player 7 (the entry exists) | 1. **401** `{"error":{"code":401,"message":"Authentication required","field":null}}`<br>2. **403** `{"error":{"code":403,"message":"You can only change your own collection","field":null}}` (the collection is unchanged) |
 
 **Required sad paths and edge cases:** a PUT on another player's collection (403, their list unchanged); an unknown game (404); status `borrowed` (422); filtering by `?status=borrowed` (422); repeating the same PUT (200, still one record).
 
