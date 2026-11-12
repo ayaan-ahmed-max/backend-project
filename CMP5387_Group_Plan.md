@@ -479,7 +479,10 @@ In each brief, items marked (Should) or (Could) are lower priority; everything e
 > **Start here:** (1) write the collection_entries model, with its one-record-per-player-per-game rule, in week 9; (2) build the PUT endpoint that creates or updates; (3) write the sad-path tests.
 
 **Tables**
-- `collection_entries`: id PK, user_id FK, game_id FK RESTRICT, status NOT NULL CHECK IN ('owned','played','wanted'), added_at, updated_at, UNIQUE (user_id, game_id)
+
+| FR | Table | Columns (type) | Keys and relationships | Constraints |
+|---|---|---|---|---|
+| FR3, FR4 | `collection_entries` | `id (INTEGER)`<br>`user_id (INTEGER)`<br>`game_id (INTEGER)`<br>`status (VARCHAR(6))`<br>`added_at (DATETIME)`<br>`updated_at (DATETIME)` | PK: `id`<br>FK: `user_id → users.id` with `ON DELETE RESTRICT`<br>FK: `game_id → games.id` with `ON DELETE RESTRICT`<br>One user and one game per entry. A user or game can have many entries. | `user_id` and `game_id` are `NOT NULL`.<br>`status NOT NULL` with `CHECK (status IN ('owned', 'played', 'wanted'))`.<br>`UNIQUE (user_id, game_id)` keeps one entry per player per game.<br>`added_at` and `updated_at` are `NOT NULL DEFAULT CURRENT_TIMESTAMP`. The API keeps `added_at` fixed and updates `updated_at` when the status changes. |
 
 **Endpoints**
 
