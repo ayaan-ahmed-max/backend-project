@@ -18,7 +18,7 @@ Every name and student ID must appear in the D2 document and the D3 video. Witho
 |---|---|---|---|---|
 | 1 | Users, auth and profiles | Ayaan Ahmed | 25178079 | |
 | 2 | Catalogue browse | Lakhan | | |
-| 3 | Catalogue maintenance | Haarisah | | |
+| 3 | Catalogue maintenance | Haarisah | 25132920 | |
 | 4 | Personal collections | Lee | | |
 | 5 | Reviews and ratings | Zeeshan | | |
 | 6 | Friends, following and activity | Hussain | 25184802 | |
